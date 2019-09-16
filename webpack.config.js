@@ -1,16 +1,17 @@
+const path = require("path");
+const webpack = require("webpack");
+const nodeExternals = require("webpack-node-externals");
+const HtmlWebPackPlugin = require("html-webpack-plugin");
 
-const path = require('path')
-const webpack = require('webpack')
-const nodeExternals = require('webpack-node-externals')
-const HtmlWebPackPlugin = require("html-webpack-plugin")
 module.exports = {
   entry: {
     client: "./src/client/index.tsx",
+    worker: "./src/worker/index.ts"
   },
   output: {
-    path: path.join(__dirname, 'dist'),
-    publicPath: '/',
-    filename: '[name].js'
+    path: path.join(__dirname, "dist"),
+    publicPath: "/",
+    filename: "[name].js"
   },
   resolve: {
     extensions: [".js", ".jsx", ".ts", ".tsx"]
@@ -26,16 +27,16 @@ module.exports = {
       },
       {
         // Loads the javacript into html template provided.
-        // Entry point is set below in HtmlWebPackPlugin in Plugins 
+        // Entry point is set below in HtmlWebPackPlugin in Plugins
         test: /\.html$/,
-        use: [{loader: "html-loader"}]
+        use: [{ loader: "html-loader" }]
       }
     ]
   },
   plugins: [
     new HtmlWebPackPlugin({
       template: "./index.html",
-      filename: "./index.html",
+      filename: "./index.html"
     })
   ]
-}
+};

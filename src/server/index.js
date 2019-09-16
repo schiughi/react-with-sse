@@ -18,7 +18,7 @@ app.get('/api/stream', (req, res) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
     sse.send(new Date().toLocaleString(), 'date');
-  }, 1000);
+  }, 10000);
 });
 
 app.get('*', (req, res) => {
