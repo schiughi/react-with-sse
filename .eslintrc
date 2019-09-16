@@ -12,6 +12,7 @@
       {
         "singleQuote": true
       }
-    ]
+    ],
+    "@typescript-eslint/explicit-function-return-type": "none"
   }
 }

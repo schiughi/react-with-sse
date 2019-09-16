@@ -1,21 +1,34 @@
-self.addEventListener('message', message => {
-  if (message.data === 'generate') {
-    const es = new EventSource('/api/stream');
+interface Event {
+  lastEventId: number;
+  data: string;
+}
+
+const generateEventSource = (
+  url: string
+) =>
+  new Promise<EventSource>((resolve, reject) => {
+    const es = new EventSource(url);
     es.addEventListener('open', () => {
-      console.log('opend!');
+      resolve(es);
     });
 
-    es.addEventListener('error', e => {
-      console.error('es error', e);
+    es.addEventListener('error', (e) => {
+      reject(e);
     });
+  });
 
-    es.addEventListener('date', (e: MessageEvent) => {
-      const message = {
-        id: e.lastEventId,
-        data: e.data
-      };
-      console.log(message);
-      self.postMessage(JSON.stringify(message));
-    });
+self.addEventListener('message', message => {
+  switch(message.data) {
+    case "generate": {
+      generateEventSource('/api/stream').then(es => {
+        es.addEventListener("date", (e: Event) => {
+          const message = {
+            id: e.lastEventId,
+            data: e.data
+          };
+          self.postMessage(JSON.stringify(message));
+        })
+      })
+    }
   }
 });
