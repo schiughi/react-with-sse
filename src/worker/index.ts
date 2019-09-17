@@ -21,11 +21,12 @@ self.addEventListener('message', message => {
   switch(message.data) {
     case "generate": {
       generateEventSource('/api/stream').then(es => {
-        es.addEventListener("date", (e: Event) => {
+        es.addEventListener("arrival", (e: Event) => {
+          const data = JSON.parse(e.data);
           const message = {
             id: e.lastEventId,
-            data: e.data
-          };
+            ...data,
+          }
           self.postMessage(JSON.stringify(message));
         })
       })
