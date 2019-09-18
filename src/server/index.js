@@ -1,10 +1,7 @@
-// eslint-disable @typescript-eslint/ban-ts-ignore
-
 import express from 'express';
 import path from 'path';
 import SSE from 'express-sse';
-import bodyParser from "body-parser";
-
+import bodyParser from 'body-parser';
 
 const app = express();
 const sse = new SSE('handshaked!', { isSerialized: false });
@@ -19,11 +16,11 @@ app.get('/api', (req, res) => {
 
 app.get('/api/stream', sse.init);
 
-app.post("/api/messages", (req, res) => {
+app.post('/api/messages', req => {
   console.log(req.body);
   // @ts-ignore
-  sse.send(req.body, "arrival");
-})
+  sse.send(req.body, 'arrival');
+});
 
 app.get('*', (req, res) => {
   res.sendFile(path.join('./', 'dist', 'index.html'));

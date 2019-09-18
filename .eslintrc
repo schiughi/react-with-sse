@@ -13,6 +13,8 @@
         "singleQuote": true
       }
     ],
-    "@typescript-eslint/explicit-function-return-type": "none"
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/ban-ts-ignore": "off",
+    "react/prop-types": "off"
   }
 }

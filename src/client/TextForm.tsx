@@ -1,16 +1,22 @@
-import React, { useState, FC, useCallback, ChangeEventHandler, MouseEventHandler } from "react";
-import styled from "styled-components";
+import React, {
+  useState,
+  FC,
+  useCallback,
+  ChangeEventHandler,
+  MouseEventHandler
+} from 'react';
+import styled from 'styled-components';
 
 type Props = {
   onSubmit: (text: string) => void;
-}
+};
 
 const Container = styled.div`
   display: flex;
   width: 100%;
   padding: 0 0.75rem;
   box-sizing: border-box;
-`
+`;
 
 const Button = styled.button`
   cursor: pointer;
@@ -20,9 +26,9 @@ const Button = styled.button`
   border: none;
   vertical-align: baseline;
   background: #e0e1e2 none;
-  color: rgba(0,0,0,.6);
-  margin: 0 .25em 0 0;
-  padding: .78571429em 1.5em .78571429em;
+  color: rgba(0, 0, 0, 0.6);
+  margin: 0 0.25em 0 0;
+  padding: 0.78571429em 1.5em 0.78571429em;
   text-transform: none;
   text-shadow: none;
   font-weight: 700;
@@ -30,7 +36,7 @@ const Button = styled.button`
   font-style: normal;
   text-align: center;
   text-decoration: none;
-  border-radius: .28571429rem;
+  border-radius: 0.28571429rem;
 `;
 
 const Textarea = styled.textarea`
@@ -38,34 +44,47 @@ const Textarea = styled.textarea`
   vertical-align: top;
   margin: 0;
   -webkit-appearance: none;
-  padding: .78571429em 1em;
+  padding: 0.78571429em 1em;
   background: #fff;
-  border: 1px solid rgba(34,36,38,.15);
+  border: 1px solid rgba(34, 36, 38, 0.15);
   outline: 0;
-  color: rgba(0,0,0,.87);
-  border-radius: .28571429rem;
+  color: rgba(0, 0, 0, 0.87);
+  border-radius: 0.28571429rem;
   box-shadow: 0 0 0 0 transparent inset;
-  transition: color .1s ease,border-color .1s ease;
+  transition: color 0.1s ease, border-color 0.1s ease;
   font-size: 1em;
   line-height: 1.2857;
   resize: vertical;
 `;
 
 export const Form: FC<Props> = ({ onSubmit }) => {
-  const [content, setContent] = useState("");
-  const handleChange = useCallback<ChangeEventHandler<HTMLTextAreaElement>>(e => {
-    setContent(e.target.value);
-  }, []);
+  const [content, setContent] = useState('');
+  const handleChange = useCallback<ChangeEventHandler<HTMLTextAreaElement>>(
+    e => {
+      setContent(e.target.value);
+    },
+    []
+  );
 
-  const handleSubmit = useCallback<MouseEventHandler>((e) => {
-    e.preventDefault();
-    onSubmit(content);
-  }, [content]);
+  const handleSubmit = useCallback<MouseEventHandler>(
+    e => {
+      e.preventDefault();
+      onSubmit(content);
+    },
+    [content]
+  );
 
   return (
     <Container>
-      <Textarea value={content} onChange={handleChange} maxLength={200} rows={3} />
-      <Button onClick={handleSubmit} disabled={!content}>send</Button>
+      <Textarea
+        value={content}
+        onChange={handleChange}
+        maxLength={200}
+        rows={3}
+      />
+      <Button onClick={handleSubmit} disabled={!content}>
+        send
+      </Button>
     </Container>
-  )
-}
+  );
+};
