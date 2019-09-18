@@ -1,3 +1,6 @@
+import { db, Message } from './IndexedDB';
+import { dispatch } from './messenger';
+
 interface Event {
   lastEventId: number;
   data: string;
@@ -27,11 +30,9 @@ const generateEventSourceHandlers = (url: string, listeners: Listeners) =>
 export const generateEventSource = () =>
   generateEventSourceHandlers('/api/stream', {
     arrival: e => {
-      const data = JSON.parse(e.data);
-      const message = {
-        id: e.lastEventId,
-        ...data
-      };
-      self.postMessage(JSON.stringify({ type: 'message', payload: message }));
+      const message: Message = JSON.parse(e.data);
+      db.messages.add(message).then(id => {
+        dispatch({ type: 'message', payload: { ...message, id } });
+      });
     }
   });

@@ -5,7 +5,7 @@ type Props = {
   messages: {
     id: number;
     name: string;
-    date: string;
+    date: number;
     content: string;
     avatar: string;
   }[];
@@ -98,7 +98,7 @@ export const Chat: FC<Props> = ({ messages }) => (
         <MessageContent>
           <MessageSummary>
             <a>{message.name}</a>
-            <time>{message.date}</time>
+            <time>{new Date(message.date).toLocaleString()}</time>
           </MessageSummary>
           <MessageText>{message.content}</MessageText>
         </MessageContent>
