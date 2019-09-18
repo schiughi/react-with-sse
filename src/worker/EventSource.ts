@@ -32,7 +32,10 @@ export const generateEventSource = () =>
     arrival: e => {
       const message: Message = JSON.parse(e.data);
       db.messages.add(message).then(id => {
-        dispatch({ type: 'message', payload: { ...message, id } });
+        dispatch({
+          type: '@client/RECEIVE_MESSAGE',
+          payload: { ...message, id }
+        });
       });
     }
   });

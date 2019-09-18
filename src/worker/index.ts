@@ -1,14 +1,17 @@
 import { generateEventSource } from './EventSource';
 import { post } from './REST';
 import { dispatch } from './messenger';
-import { db, Message } from './IndexedDB';
+import { db } from './IndexedDB';
+
+const GENERATE = '@worker/GENERATE' as const;
+const SEND_MESSAGE = '@worker/SEND_MESSAGE' as const;
 
 type Action =
   | {
-      type: 'generate';
+      type: typeof GENERATE;
     }
   | {
-      type: 'send';
+      type: typeof SEND_MESSAGE;
       payload: object;
     };
 
@@ -18,17 +21,20 @@ self.addEventListener('message', message => {
   }
   const action: Action = JSON.parse(message.data);
   switch (action.type) {
-    case 'send': {
-      post('/api/messages', action.payload);
-    }
-    case 'generate': {
-      generateEventSource().then(() => {
+    case SEND_MESSAGE:
+      return post('/api/messages', action.payload);
+    case GENERATE: {
+      return generateEventSource().then(() => {
         db.messages
           .orderBy('date')
+          .reverse()
           .limit(10)
           .toArray()
           .then(messages => {
-            dispatch({ type: 'messages', payload: { messages } });
+            dispatch({
+              type: '@client/RECEIVE_MESSAGES',
+              payload: { messages }
+            });
           });
       });
     }

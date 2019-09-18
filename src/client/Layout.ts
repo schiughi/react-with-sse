@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const Grid = styled.div`
   display: grid;
@@ -10,7 +10,7 @@ export const Grid = styled.div`
   grid-template-rows: 1fr 100px;
   grid-template-areas: 'sidebar chat' 'sidebar form';
   background-color: gray;
-`
+`;
 
 export const Sidebar = styled.div`
   grid-area: sidebar;
@@ -20,10 +20,15 @@ export const Sidebar = styled.div`
 export const Chat = styled.div`
   grid-area: chat;
   background-color: white;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
 `;
 
 export const Form = styled.div`
   grid-area: form;
   background-color: white;
   width: 100%;
+  height: 100%;
+  overflow: hidden;
 `;
