@@ -29,13 +29,12 @@ const generateEventSourceHandlers = (url: string, listeners: Listeners) =>
 
 export const generateEventSource = () =>
   generateEventSourceHandlers('/api/stream', {
-    arrival: e => {
+    arrival: async e => {
       const message: Message = JSON.parse(e.data);
-      db.messages.add(message).then(id => {
-        dispatch({
-          type: '@client/RECEIVE_MESSAGE',
-          payload: { ...message, id }
-        });
+      const id = await db.messages.add(message);
+      dispatch({
+        type: '@client/RECEIVE_MESSAGE',
+        payload: { ...message, id }
       });
     }
   });

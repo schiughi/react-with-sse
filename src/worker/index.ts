@@ -15,7 +15,7 @@ type Action =
       payload: object;
     };
 
-self.addEventListener('message', message => {
+self.addEventListener('message', async message => {
   if (!message.data || typeof message.data !== 'string') {
     return;
   }
@@ -24,18 +24,15 @@ self.addEventListener('message', message => {
     case SEND_MESSAGE:
       return post('/api/messages', action.payload);
     case GENERATE: {
-      return generateEventSource().then(() => {
-        db.messages
-          .orderBy('date')
-          .reverse()
-          .limit(10)
-          .toArray()
-          .then(messages => {
-            dispatch({
-              type: '@client/RECEIVE_MESSAGES',
-              payload: { messages }
-            });
-          });
+      await generateEventSource();
+      const messages = await db.messages
+        .orderBy('date')
+        .reverse()
+        .limit(10)
+        .toArray();
+      return dispatch({
+        type: '@client/RECEIVE_MESSAGES',
+        payload: { messages }
       });
     }
   }
