@@ -1,26 +1,27 @@
 import React, { FC, useCallback, useEffect } from 'react';
 import { Reset } from 'styled-reset';
 
-import { Chat } from './Chat';
-import * as Layout from './Layout';
-import { Form } from './TextForm';
+import { Chat } from './components/Chat';
+import * as Layout from './components/Layout';
+import { Form } from './components/TextForm';
 import { useStore, Action } from './store';
+import { initializeWorker, sendMessage } from './adapter';
 
 type OnSubmit = Parameters<typeof Form>[0]['onSubmit'];
-
-const worker = new Worker('worker.js');
 
 export const App: FC = () => {
   const [store, dispatch] = useStore();
 
   useEffect(() => {
-    worker.postMessage(JSON.stringify({ type: '@worker/GENERATE' }));
-    worker.addEventListener('message', (e: MessageEvent) => {
-      if (!e.data || typeof e.data !== 'string') {
+    const listener = (e: MessageEvent) => {
+      if (!e.data || typeof e.data !== 'object') {
         return;
       }
-      const action = JSON.parse(e.data) as Action;
+      const action: Action = e.data;
       dispatch(action);
+    };
+    initializeWorker(listener).then(() => {
+      sendMessage({ type: '@worker/GENERATE' });
     });
   }, []);
 
@@ -32,12 +33,10 @@ export const App: FC = () => {
       avatar:
         'https://www.clevelanddentalhc.com/wp-content/uploads/2018/03/sample-avatar-300x300.jpg'
     };
-    worker.postMessage(
-      JSON.stringify({
-        type: '@worker/SEND_MESSAGE',
-        payload
-      })
-    );
+    sendMessage({
+      type: '@worker/SEND_MESSAGE',
+      payload
+    });
   }, []);
 
   return (

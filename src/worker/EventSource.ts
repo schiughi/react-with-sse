@@ -1,5 +1,5 @@
 import { db, Message } from './IndexedDB';
-import { dispatch } from './messenger';
+import { sendMessage } from './messenger';
 
 interface Event {
   lastEventId: number;
@@ -32,7 +32,7 @@ export const generateEventSource = () =>
     arrival: async e => {
       const message: Message = JSON.parse(e.data);
       const id = await db.messages.add(message);
-      dispatch({
+      sendMessage({
         type: '@client/RECEIVE_MESSAGE',
         payload: { ...message, id }
       });

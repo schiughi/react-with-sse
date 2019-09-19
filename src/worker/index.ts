@@ -1,6 +1,6 @@
 import { generateEventSource } from './EventSource';
 import { post } from './REST';
-import { dispatch } from './messenger';
+import { sendMessage } from './messenger';
 import { db } from './IndexedDB';
 
 const GENERATE = '@worker/GENERATE' as const;
@@ -15,11 +15,21 @@ type Action =
       payload: object;
     };
 
+self.addEventListener('install', (event: unknown) => {
+  // @ts-ignore
+  event.waitUntil(self.skipWaiting());
+});
+
+self.addEventListener('activate', (event: unknown) => {
+  // @ts-ignore
+  event.waitUntil(self.clients.claim());
+});
+
 self.addEventListener('message', async message => {
-  if (!message.data || typeof message.data !== 'string') {
+  if (!message.data || typeof message.data !== 'object') {
     return;
   }
-  const action: Action = JSON.parse(message.data);
+  const action: Action = message.data;
   switch (action.type) {
     case SEND_MESSAGE:
       return post('/api/messages', action.payload);
@@ -30,7 +40,7 @@ self.addEventListener('message', async message => {
         .reverse()
         .limit(10)
         .toArray();
-      return dispatch({
+      return sendMessage({
         type: '@client/RECEIVE_MESSAGES',
         payload: { messages }
       });
